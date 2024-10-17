@@ -1,0 +1,17 @@
+
+> ai-mp3@0.1.0 dev
+> next dev
+
+  ▲ Next.js 14.2.11
+  - Local:        http://localhost:3000
+  - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 1407ms
+ ○ Compiling /create ...
+ ✓ Compiled /create in 1492ms (563 modules)
+ GET /create 200 in 1662ms
+ ✓ Compiled in 139ms (263 modules)
+ ✓ Compiled /favicon.ico in 95ms (331 modules)
+ GET /favicon.ico 200 in 148ms
+[?25h

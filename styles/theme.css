@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --stroke-width: 4px;
+}
+
+@layer utilities {
+  .header_text {
+    @apply font-bungee text-[40px];
+    color: #fffeec;
+    text-shadow:
+      calc(var(--stroke-width) * -1) calc(var(--stroke-width) * -1) 0 #000,
+      calc(var(--stroke-width) * 1) calc(var(--stroke-width) * -1) 0 #000,
+      calc(var(--stroke-width) * -1) calc(var(--stroke-width) * 1) 0 #000,
+      calc(var(--stroke-width) * 1) calc(var(--stroke-width) * 1) 0 #000;
+    line-height: normal;
+    letter-spacing: 4.59px;
+  }
+}
