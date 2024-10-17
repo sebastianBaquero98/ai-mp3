@@ -48,7 +48,8 @@ export default function Result() {
       try {
         const playlistId = await createPlaylist(
           userId,
-          playlistName || "Test Title"
+          playlistName || "Test Title",
+          prompt || "AI.MP3"
         );
         // console.log("playlistId", playlistId);
         await addSongsToPlaylist(playlistId, playlist);
@@ -92,19 +93,18 @@ export default function Result() {
       <div className="mb-[20px] w-[322px] border-2 border-black bg-light-pink p-3  font-sans text-[14px] focus:outline-none">
         <p>{prompt}</p>
       </div>
-      <div className="mb-[10px] flex w-full justify-start">
-        <h3 className="ms-[30px] font-bungee text-[12px] opacity-80">
+      <div className="mb-[10px] flex w-full items-center justify-between px-[30px]">
+        <h3 className=" font-bungee text-[12px] opacity-80">
           <input
             ref={inputRef}
             className=" m-0 w-auto min-w-[1em] border-none bg-background p-0 outline-none"
             value={playlistName || ""}
             onChange={(e) => setPlaylistName(e.target.value)}
           />
-          <p>
-            {Math.round(duration)}{" "}
-            {Math.round(duration) === 1 ? "hora" : "horas"}
-          </p>
         </h3>
+        <p className="ms-[30px] font-bungee text-[12px] opacity-80">
+          {duration.toFixed(1)} {duration.toFixed(1) === 1 ? "hora" : "horas"}
+        </p>
         {/* <p className="ms-[30px] font-bungee text-[12px] opacity-80">
           {Math.round(duration)} {Math.round(duration) === 1 ? "hora" : "horas"}
         </p> */}

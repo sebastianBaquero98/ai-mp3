@@ -33,27 +33,38 @@ export default function Create() {
         audioFeatures,
         prompt
       );
-      extractedAttributes = extractedAttributes.replace("json", "");
-      extractedAttributes = extractedAttributes.replace("`", "");
-      extractedAttributes = extractedAttributes.replace("`", "");
-      extractedAttributes = extractedAttributes.replace("`", "");
-      extractedAttributes = extractedAttributes.replace("`", "");
-      extractedAttributes = extractedAttributes.replace("`", "");
-      extractedAttributes = extractedAttributes.replace("`", "");
-      // console.log(extractedAttributes);
-      const attributes = JSON.parse(extractedAttributes);
-      console.log(attributes);
 
-      const { filteredTracks, playlistDuracion } =
-        await makeRecomendation(attributes);
-      const title = await createTitle(filteredTracks, prompt);
+      try {
+        extractedAttributes = extractedAttributes.replace("json", "");
+        extractedAttributes = extractedAttributes.replace("`", "");
+        extractedAttributes = extractedAttributes.replace("`", "");
+        extractedAttributes = extractedAttributes.replace("`", "");
+        extractedAttributes = extractedAttributes.replace("`", "");
+        extractedAttributes = extractedAttributes.replace("`", "");
+        extractedAttributes = extractedAttributes.replace("`", "");
+        const attributes = JSON.parse(extractedAttributes);
+        const { filteredTracks, playlistDuracion } =
+          await makeRecomendation(attributes);
+        const title = await createTitle(filteredTracks, prompt);
+        setPlaylist(filteredTracks);
+        const durationInMinutes = msToHours(playlistDuracion);
+        router.push(
+          `/create/result?prompt=${prompt}&title=${title}&duration=${durationInMinutes}`
+        );
+      } catch (error) {
+        console.log(error);
+        router.push(
+          `/create/result?prompt=${prompt}&title=No PLaylist}&duration=0`
+        );
+      }
+
+      // console.log(extractedAttributes);
+
+      // console.log(attributes);
+
       // // console.log(recommendedTracks);
       // console.log("duracion", playlistDuracion);
-      setPlaylist(filteredTracks);
-      const durationInMinutes = msToHours(playlistDuracion);
-      router.push(
-        `/create/result?prompt=${prompt}&title=${title}&duration=${durationInMinutes}`
-      );
+
       // console.log(recommendedTracks);
       // router.push({
       //   pathname: "/create/result",

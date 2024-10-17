@@ -149,14 +149,13 @@ export async function searchTracks(
 }
 
 async function getArtistId(artistName: string) {
-  // Encode the artist name to make it URL-safe
   const cookieStore = cookies();
   const accessToken = cookieStore.get("spotify_access_token")?.value;
   const query = encodeURIComponent(artistName);
 
-  // Make a request to the Spotify Search API
+  // Make a request to the Spotify Search API with increased limit
   const response = await fetch(
-    `https://api.spotify.com/v1/search?q=${query}&type=artist&limit=1`,
+    `https://api.spotify.com/v1/search?q=${query}&type=artist&limit=10`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -164,7 +163,6 @@ async function getArtistId(artistName: string) {
     }
   );
 
-  // Check if the response is successful
   if (!response.ok) {
     const errorData = await response.json();
     console.error("Error fetching artist ID:", errorData);
@@ -173,16 +171,100 @@ async function getArtistId(artistName: string) {
     );
   }
 
-  // Parse the JSON response
   const data = await response.json();
 
-  // Check if any artists were found
   if (data.artists.items.length > 0) {
-    // Return the ID of the first artist in the search results
-    return data.artists.items[0].id;
-  } else {
-    throw new Error(`Artist "${artistName}" not found.`);
+    // Find the best match among the returned artists
+    const bestMatch = findBestArtistMatch(data.artists.items, artistName);
+    if (bestMatch) {
+      return bestMatch.id;
+    }
   }
+
+  throw new Error(`Artist "${artistName}" not found or no close match.`);
+}
+
+function findBestArtistMatch(artists: any[], searchName: string): any | null {
+  const normalizedSearchName = normalizeString(searchName);
+
+  // First, try to find an exact match (case-insensitive)
+  const exactMatch = artists.find(
+    (artist) => normalizeString(artist.name) === normalizedSearchName
+  );
+  if (exactMatch) return exactMatch;
+
+  // If no exact match, use a scoring system
+  let bestMatch = null;
+  let highestScore = 0;
+
+  for (const artist of artists) {
+    const score = calculateMatchScore(artist.name, searchName);
+    if (score > highestScore) {
+      highestScore = score;
+      bestMatch = artist;
+    }
+  }
+
+  // Only return a match if the score is above a certain threshold
+  return highestScore > 0.8 ? bestMatch : null;
+}
+
+function calculateMatchScore(artistName: string, searchName: string): number {
+  const normalizedArtistName = normalizeString(artistName);
+  const normalizedSearchName = normalizeString(searchName);
+
+  // Check for full inclusion
+  if (
+    normalizedArtistName.includes(normalizedSearchName) ||
+    normalizedSearchName.includes(normalizedArtistName)
+  ) {
+    return 0.9;
+  }
+
+  // Calculate Levenshtein distance
+  const distance = levenshteinDistance(
+    normalizedArtistName,
+    normalizedSearchName
+  );
+  const maxLength = Math.max(
+    normalizedArtistName.length,
+    normalizedSearchName.length
+  );
+  return 1 - distance / maxLength;
+}
+
+function normalizeString(str: string): string {
+  return str.toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+function levenshteinDistance(a: string, b: string): number {
+  if (a.length === 0) return b.length;
+  if (b.length === 0) return a.length;
+
+  const matrix = [];
+
+  for (let i = 0; i <= b.length; i++) {
+    matrix[i] = [i];
+  }
+
+  for (let j = 0; j <= a.length; j++) {
+    matrix[0][j] = j;
+  }
+
+  for (let i = 1; i <= b.length; i++) {
+    for (let j = 1; j <= a.length; j++) {
+      if (b.charAt(i - 1) === a.charAt(j - 1)) {
+        matrix[i][j] = matrix[i - 1][j - 1];
+      } else {
+        matrix[i][j] = Math.min(
+          matrix[i - 1][j - 1] + 1,
+          matrix[i][j - 1] + 1,
+          matrix[i - 1][j] + 1
+        );
+      }
+    }
+  }
+
+  return matrix[b.length][a.length];
 }
 
 export async function getAvailableGenreSeeds(): Promise<string[]> {
@@ -321,27 +403,25 @@ async function filterByAudioFeatures(
   extractedAttributes: ExtractedAttributes,
   tracks: SpotifyTrack[]
 ) {
-  // console.log("extractedAttributes", extractedAttributes);
-  // console.log("tracks before filter", tracks);
-  let filteredTracks: SpotifyTrack[] = [];
+  const filteredTracks: SpotifyTrack[] = [];
   let playlistDuracion = 0;
+
+  // Create a Set to store unique track IDs
+  const uniqueTrackIds = new Set<string>();
 
   const trackIds = tracks.map((track) => track.trackId);
   const tracksAudioFeatures = await extractTrackFeatures(trackIds);
-  // console.log("tracksAudioFeatures", tracksAudioFeatures);
-  // Get Music Attributes of each song
-  let index = 0;
-  for (const track of tracks) {
-    // console.log("track", track.trackId);
 
-    // Quiero que para todos los tracks solo sea un llamdo a la API -> Rate Limit
-    // console.log("trackAudioFeatures", trackAudioFeatures);
+  for (let index = 0; index < tracks.length; index++) {
+    const track = tracks[index];
     const trackAudioFeatures = tracksAudioFeatures[index];
-    // if (index === 0) {
-    //   console.log("trackAudioFeatures", trackAudioFeatures);
-    // }
 
-    if (
+    // Check if the track ID is already in the Set
+    if (uniqueTrackIds.has(track.trackId)) {
+      continue; // Skip this track if it's a duplicate
+    }
+
+    const shouldAddTrack =
       "danceability" in extractedAttributes ||
       "energy" in extractedAttributes ||
       "tempo" in extractedAttributes ||
@@ -350,8 +430,9 @@ async function filterByAudioFeatures(
       "instrumentalness" in extractedAttributes ||
       "liveness" in extractedAttributes ||
       "speechiness" in extractedAttributes ||
-      "acousticness" in extractedAttributes
-    ) {
+      "acousticness" in extractedAttributes;
+
+    if (shouldAddTrack) {
       if (
         (trackAudioFeatures?.danceability >
           extractedAttributes.danceability?.min &&
@@ -380,19 +461,28 @@ async function filterByAudioFeatures(
           trackAudioFeatures?.acousticness <
             extractedAttributes.acousticness?.max)
       ) {
-        // console.log("Track added");
         filteredTracks.push(track);
         playlistDuracion += parseFloat(trackAudioFeatures.duration_ms);
+        uniqueTrackIds.add(track.trackId); // Add the track ID to the Set
       }
     } else {
-      filteredTracks = tracks;
-      playlistDuracion += tracksAudioFeatures.map((track: any) =>
-        parseFloat(track.duration_ms)
-      );
+      if (!uniqueTrackIds.has(track.trackId)) {
+        filteredTracks.push(track);
+        playlistDuracion += parseFloat(trackAudioFeatures.duration_ms);
+        uniqueTrackIds.add(track.trackId); // Add the track ID to the Set
+      }
     }
-
-    index++;
   }
+
+  // Shuffle the filtered tracks using Fisher-Yates algorithm
+  for (let i = filteredTracks.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [filteredTracks[i], filteredTracks[j]] = [
+      filteredTracks[j],
+      filteredTracks[i],
+    ];
+  }
+
   return { filteredTracks, playlistDuracion };
 }
 
@@ -431,7 +521,11 @@ export async function makeRecomendation(
   // console.log(recommendedTracks);
 }
 
-export async function createPlaylist(userId: string, name: string) {
+export async function createPlaylist(
+  userId: string,
+  name: string,
+  prompt: string
+) {
   const cookieStore = cookies();
   const accessToken = cookieStore.get("spotify_access_token")?.value;
   try {
@@ -445,8 +539,9 @@ export async function createPlaylist(userId: string, name: string) {
         body: JSON.stringify({
           // Add your request body here
           name,
-          public: false,
+          public: true,
           collaborative: false,
+          description: `"${prompt}" - AI.MP3`,
         }),
       }
     );

@@ -71,13 +71,11 @@ const SongItem = ({
       />
       <div className="ms-[23px] flex w-3/5 flex-col">
         <h1
-          // className={`font-bungee ${name.split(" ").length >= 4 ? "text-[10px]" : "text-[15px]"} `}
-          className={`font-bungee text-[10px] `}
+          className={`font-bungee ${name.replace(/\s*\(.*?\)/, "").split(" ").length >= 4 ? "text-[10px]" : "text-[15px]"} `}
         >
-          {name}
-          {/* {name.includes("-")
+          {name.includes("-")
             ? name.split("-")[0].replace(/\s*\(.*?\)/, "")
-            : name.replace(/\s*\(.*?\)/, "")} */}
+            : name.replace(/\s*\(.*?\)/, "")}
         </h1>
         {artists.split(",").length > 4 ? (
           <p className="mt-[-5px] font-sans text-[10px]">
@@ -91,7 +89,6 @@ const SongItem = ({
         previewUrl ? (
           <div>
             <audio ref={audioRef} src={previewUrl} />
-            {/* <button onClick={togglePlay}>{isPlaying ? "Pause" : "Play"}</button> */}
             {isPlaying ? (
               <Image
                 src="/images/stop_btn.svg"
