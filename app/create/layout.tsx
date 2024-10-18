@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { Suspense } from "react";
 import { PlaylistProvider } from "@/context/PlaylistContext";
 
 export default function CreateLayout({
@@ -10,7 +10,9 @@ export default function CreateLayout({
   return (
     <html lang="en" className={`h-screen bg-background`}>
       <body className="font-sans">
-        <PlaylistProvider>{children}</PlaylistProvider>
+        <Suspense fallback={<div>Loading...</div>}>
+          <PlaylistProvider>{children}</PlaylistProvider>
+        </Suspense>
       </body>
     </html>
   );
