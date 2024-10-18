@@ -74,7 +74,7 @@ export default function Create() {
   };
   return (
     <div className="flex flex-col items-center">
-      <div className="mb-[26px] mt-[50px] flex h-[52px] w-full items-center justify-center border-y-2 border-y-black bg-sky-blue">
+      <div className="mb-[26px] mt-[40px] flex h-[52px] w-full items-center justify-center border-y-2 border-y-black bg-sky-blue">
         <Image
           src="/images/ai_mp3.svg"
           width={131}
@@ -89,7 +89,7 @@ export default function Create() {
           INGRESA UN PROMPT{"  "}
         </span>
 
-        <h1 className="font-bungee text-[16px]">INGERSA UN PROMPT</h1>
+        <h1 className="font-bungee text-[20px]">INGERSA UN PROMPT</h1>
         <span className="font-bungee text-[12px] opacity-15">
           INGRESA UN PROMPT{"  "}
         </span>
@@ -98,7 +98,7 @@ export default function Create() {
         onChange={(e) => setPrompt(e.target.value)}
         value={prompt}
         placeholder="Quiero un playlist para poder manejar por la noche con las ventanas abajo y a todo volumen. Que dure mínimo una hora y que vaya de menos a más"
-        className="h-[120px] w-[322px] border-2 border-black bg-light-pink p-3 text-[14px]  focus:outline-none"
+        className="h-[130px] w-[322px] border-2 border-black bg-light-pink p-3 text-[16px]  focus:outline-none"
       />
       <div className="me-[50px] mt-[13px] flex w-full justify-end">
         {!isPending ? (

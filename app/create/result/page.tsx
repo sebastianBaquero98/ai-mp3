@@ -85,7 +85,7 @@ export default function Result() {
           PROMPT{"  "}PROMPT PROMPT
         </span>
 
-        <h1 className="font-bungee text-[16px]">PROMPT</h1>
+        <h1 className="font-bungee text-[20px]">PROMPT</h1>
         <span className="font-bungee text-[12px] opacity-15">
           PROMPT{"  "}PROMPT PROMPT
         </span>
@@ -94,7 +94,7 @@ export default function Result() {
         <p>{prompt}</p>
       </div>
       <div className="mb-[10px] flex w-full items-center justify-between px-[30px]">
-        <h3 className=" font-bungee text-[12px] opacity-80">
+        <h3 className=" font-bungee text-[16px] opacity-80">
           <input
             ref={inputRef}
             className=" m-0 w-auto min-w-[1em] border-none bg-background p-0 outline-none"
@@ -102,9 +102,10 @@ export default function Result() {
             onChange={(e) => setPlaylistName(e.target.value)}
           />
         </h3>
-        <p className="ms-[30px] font-bungee text-[12px] opacity-80">
-          {duration.toFixed(1)}{" "}
-          {parseFloat(duration.toFixed(1)) === 1 ? "hora" : "horas"}
+        <p className="ms-[30px] font-bungee text-[14px] opacity-80">
+          {duration.toFixed(1)}
+          {"H"}
+          {/* {parseFloat(duration.toFixed(1)) === 1 ? "hora" : "horas"} */}
         </p>
         {/* <p className="ms-[30px] font-bungee text-[12px] opacity-80">
           {Math.round(duration)} {Math.round(duration) === 1 ? "hora" : "horas"}
