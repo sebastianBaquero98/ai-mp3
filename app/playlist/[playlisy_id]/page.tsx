@@ -1,4 +1,4 @@
-import SongItem from "@/components/SongItem";
+// import SongItem from "@/components/SongItem";
 import Image from "next/image";
 export default function Playlist() {
   return (
@@ -35,6 +35,7 @@ export default function Playlist() {
         </div>
       </div>
       <div className="mt-[25px] flex flex-col gap-1">
+        {/* <SongItem />
         <SongItem />
         <SongItem />
         <SongItem />
@@ -42,8 +43,7 @@ export default function Playlist() {
         <SongItem />
         <SongItem />
         <SongItem />
-        <SongItem />
-        <SongItem />
+        <SongItem /> */}
         <div className="mt-[60px] flex w-full justify-center gap-4">
           <Image
             src="/images/agregar_btn.svg"

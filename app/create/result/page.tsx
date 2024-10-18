@@ -103,7 +103,8 @@ export default function Result() {
           />
         </h3>
         <p className="ms-[30px] font-bungee text-[12px] opacity-80">
-          {duration.toFixed(1)} {duration.toFixed(1) === 1 ? "hora" : "horas"}
+          {duration.toFixed(1)}{" "}
+          {parseFloat(duration.toFixed(1)) === 1 ? "hora" : "horas"}
         </p>
         {/* <p className="ms-[30px] font-bungee text-[12px] opacity-80">
           {Math.round(duration)} {Math.round(duration) === 1 ? "hora" : "horas"}

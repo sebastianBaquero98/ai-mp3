@@ -327,7 +327,7 @@ async function getRecommendationGenre(
   const { genres: _, artists: __, ...filteredAttributes } = extractedAttributes;
 
   const params = new URLSearchParams();
-  Object.entries(filteredAttributes).forEach(([key, value]) => {
+  Object.entries(filteredAttributes).forEach(([key, value]: any) => {
     params.append(`min_${key}`, value.min.toString());
     params.append(`max_${key}`, value.max.toString());
   });
