@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useTransition } from "react";
+import React, { useEffect, useState, useTransition } from "react";
 import Image from "next/image";
 import { createTitle, getExtractedAttributes } from "@/lib/actions/ai.actions";
 import { usePlaylist } from "@/context/PlaylistContext";
@@ -11,16 +11,24 @@ import {
 import { makeRecomendation } from "@/lib/spotify";
 import { useRouter } from "next/navigation";
 import { msToHours } from "@/lib/utils";
+import { placeholderPrompts } from "@/constants";
 
 export default function Create() {
   const router = useRouter();
   const [prompt, setPrompt] = useState("");
   const [isPending, startTransition] = useTransition();
   const { setPlaylist } = usePlaylist();
+  const [placeholder, setPlaceholder] = useState("");
+
+  useEffect(() => {
+    const randomIndex = Math.floor(Math.random() * placeholderPrompts.length);
+    setPlaceholder(placeholderPrompts[randomIndex]);
+  }, []);
 
   const handleClick = async () => {
     startTransition(async () => {
       const { favoriteArtists, favoriteGenres } = await getTopArtistsInfo();
+
       // console.log(favoriteArtists);
       // console.log(favoriteGenres);
       const topTracks = await getUserTopTrackNames();
@@ -57,19 +65,6 @@ export default function Create() {
           `/create/result?prompt=${prompt}&title=No PLaylist}&duration=0`
         );
       }
-
-      // console.log(extractedAttributes);
-
-      // console.log(attributes);
-
-      // // console.log(recommendedTracks);
-      // console.log("duracion", playlistDuracion);
-
-      // console.log(recommendedTracks);
-      // router.push({
-      //   pathname: "/create/result",
-      //   query: { items: JSON.stringify(recommendedTracks) },
-      // });
     });
   };
   return (
@@ -97,7 +92,7 @@ export default function Create() {
       <textarea
         onChange={(e) => setPrompt(e.target.value)}
         value={prompt}
-        placeholder="Quiero un playlist para poder manejar por la noche con las ventanas abajo y a todo volumen. Que dure mínimo una hora y que vaya de menos a más"
+        placeholder={placeholder}
         className="h-[130px] w-[322px] border-2 border-black bg-light-pink p-3 text-[16px]  focus:outline-none"
       />
       <div className="me-[50px] mt-[13px] flex w-full justify-end">
