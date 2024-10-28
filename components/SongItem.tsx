@@ -61,75 +61,84 @@ const SongItem = ({
 
   // const replaceSong = (id: string) => {};
   return (
-    <div className="mb-1 flex h-[40px] w-full items-center border-y-2 border-y-black bg-light-yellow ps-[28px]">
-      <Image
-        src={playlistCover}
-        height={30}
-        width={30}
-        alt="album_cover.svg"
-        className="rounded-lg border-2 border-black"
-      />
-      <div className="ms-[23px] flex w-3/5 flex-col">
-        <h1
-          className={`font-bungee ${name.replace(/\s*\(.*?\)/, "").split(" ").length >= 4 ? "text-[10px]" : "text-[15px]"} `}
-        >
-          {name.includes("-")
-            ? name.split("-")[0].replace(/\s*\(.*?\)/, "")
-            : name.replace(/\s*\(.*?\)/, "")}
-        </h1>
-        {artists.split(",").length > 4 ? (
-          <p className="mt-[-5px] font-sans text-[10px]">
-            {artists.split(",").slice(0, 4).join(", ") + ", ..."}
-          </p>
+    <div className="relative  w-full text-white">
+      {/* Main Content Container */}
+      <div className="relative z-10 flex h-[55px] w-full items-center ps-[28px]">
+        <Image
+          src={playlistCover}
+          height={47}
+          width={47}
+          alt="album_cover.svg"
+          className="rounded-lg border-2 border-black"
+        />
+        <div className="ms-[23px] flex w-3/5 flex-col">
+          <h1
+            className={`font-bungee ${
+              name.replace(/\s*\(.*?\)/, "").split(" ").length >= 4
+                ? "text-[10px]"
+                : "text-[15px]"
+            }`}
+          >
+            {name.includes("-")
+              ? name.split("-")[0].replace(/\s*\(.*?\)/, "")
+              : name.replace(/\s*\(.*?\)/, "")}
+          </h1>
+          {artists.split(",").length > 4 ? (
+            <p className="mt-[-5px] font-sans text-[10px]">
+              {artists.split(",").slice(0, 4).join(", ") + ", ..."}
+            </p>
+          ) : (
+            <p className="mt-[-5px] font-sans text-[10px]">{artists}</p>
+          )}
+        </div>
+
+        {!isEdit ? (
+          previewUrl ? (
+            <div>
+              <audio ref={audioRef} src={previewUrl} />
+              {isPlaying ? (
+                <Image
+                  src="/images/playling.gif"
+                  height={20}
+                  width={40}
+                  alt="stop_btn.svg"
+                  onClick={togglePlay}
+                />
+              ) : (
+                <Image
+                  src="/images/play_btn_v2.svg"
+                  height={32}
+                  width={32}
+                  alt="play_btn.svg"
+                  onClick={togglePlay}
+                />
+              )}
+            </div>
+          ) : (
+            <p></p>
+          )
         ) : (
-          <p className="mt-[-5px] font-sans text-[10px]">{artists}</p>
+          <div className="flex gap-1">
+            <Image
+              src="/images/remove.svg"
+              height={15}
+              width={53}
+              alt="remove.svg"
+              onClick={removeSong}
+            />
+          </div>
         )}
       </div>
-      {!isEdit ? (
-        previewUrl ? (
-          <div>
-            <audio ref={audioRef} src={previewUrl} />
-            {isPlaying ? (
-              <Image
-                src="/images/stop_btn.svg"
-                height={15}
-                width={55}
-                alt="stop_btn.svg"
-                onClick={togglePlay}
-              />
-            ) : (
-              <Image
-                src="/images/play_btn.svg"
-                height={15}
-                width={55}
-                alt="play_btn.svg"
-                onClick={togglePlay}
-              />
-            )}
-          </div>
-        ) : (
-          <p></p>
-        )
-      ) : (
-        <div className=" flex gap-1">
-          <Image
-            src="/images/remove.svg"
-            height={15}
-            width={53}
-            alt="remove.svg"
-            onClick={removeSong}
-          />
-          {/* <Image
-            src="/images/replace.svg"
-            height={15}
-            width={53}
-            alt="replace.svg"
-            onClick={togglePlay}
-          /> */}
-        </div>
-        // <p>Preview not available</p>
-      )}
-      {/* */}
+
+      {/* Graffiti Strip Image Positioned Below */}
+      <div className="absolute inset-x-0 -bottom-0 left-[55px] z-0">
+        <Image
+          src="/images/grafiti_strip.png"
+          height={16}
+          width={297}
+          alt="grafiti_strip"
+        />
+      </div>
     </div>
   );
 };
