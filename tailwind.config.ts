@@ -10,10 +10,11 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "#FFFEEC",
+        background: "#121212",
         "sky-blue": "#C5EFF3",
         "light-pink": "#FCDCE7",
         "light-yellow": "#FCEC61",
+        "electric-green": "#90FE1E",
         foreground: "hsl(var(--foreground))",
         card: {
           DEFAULT: "hsl(var(--card))",
@@ -56,7 +57,7 @@ const config: Config = {
       },
       fontFamily: {
         bungee: ["var(--font-bungee)", "sans-serif"],
-        sans: ["var(--font-nunito)", "sans-serif"],
+        sans: ["var(--font-rubik)", "sans-serif"],
       },
       borderRadius: {
         lg: "var(--radius)",

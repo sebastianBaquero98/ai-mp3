@@ -1,7 +1,7 @@
 import React from "react";
 import type { Metadata } from "next";
 
-import { Bungee, Nunito } from "next/font/google";
+import { Bungee, Rubik } from "next/font/google";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -16,10 +16,10 @@ const bungee = Bungee({
   display: "swap",
 });
 
-const nunito = Nunito({
+const nunito = Rubik({
   subsets: ["latin"],
   weight: ["400", "700"],
-  variable: "--font-nunito",
+  variable: "--font-rubik",
   display: "swap",
 });
 
