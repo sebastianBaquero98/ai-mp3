@@ -4,7 +4,6 @@ import { SpotifyTrack } from "@/types";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Image from "next/image";
 import { useSearchParams, useRouter } from "next/navigation";
-import Link from "next/link";
 import { addSongsToPlaylist, createPlaylist, getProfile } from "@/lib/spotify";
 import { usePlaylist } from "@/context/PlaylistContext";
 import { useEffect, useRef, useState, useTransition } from "react";
