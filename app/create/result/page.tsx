@@ -8,6 +8,7 @@ import Link from "next/link";
 import { addSongsToPlaylist, createPlaylist, getProfile } from "@/lib/spotify";
 import { usePlaylist } from "@/context/PlaylistContext";
 import { useEffect, useRef, useState, useTransition } from "react";
+import { Button } from "@/components/ui/button";
 
 export default function Result() {
   const router = useRouter();
@@ -120,6 +121,31 @@ export default function Result() {
           )
         )} */}
       </div>
+      <div className=" mt-[15px] flex gap-4">
+        {!isPending && (
+          <>
+            <Button
+              className="h-[30px] bg-electric-green px-5 text-background"
+              onClick={() => setIsEdit(!isEdit)}
+            >
+              Editar
+            </Button>
+            <Button
+              className="mb-3 h-[30px] bg-electric-green px-5 py-0 text-background"
+              onClick={addPlaylist}
+            >
+              Agregar
+            </Button>
+            {/* <Image
+              src="/images/agregar_btn.svg"
+              height={35}
+              width={122}
+              alt="agregar_btn"
+              onClick={addPlaylist}
+            /> */}
+          </>
+        )}
+      </div>
     </div>
     // <div className="flex w-full flex-col items-center">
     //   <div className="mb-[26px] mt-[50px] flex h-[52px] w-full items-center justify-center border-y-2 border-y-black bg-sky-blue">
@@ -188,26 +214,26 @@ export default function Result() {
     //     )
     //   )} */}
     // </div>
-    //   <div className="mt-[21px] flex gap-4">
-    //     {!isPending && (
-    //       <>
-    //         <Image
-    //           src="/images/editar_btn.svg"
-    //           height={35}
-    //           width={113}
-    //           alt="editar_btn"
-    //           onClick={() => setIsEdit(!isEdit)}
-    //         />
-    //         <Image
-    //           src="/images/agregar_btn.svg"
-    //           height={35}
-    //           width={122}
-    //           alt="agregar_btn"
-    //           onClick={addPlaylist}
-    //         />
-    //       </>
-    //     )}
-    //   </div>
+    // <div className="mt-[21px] flex gap-4">
+    //   {!isPending && (
+    //     <>
+    //       <Image
+    //         src="/images/editar_btn.svg"
+    //         height={35}
+    //         width={113}
+    //         alt="editar_btn"
+    //         onClick={() => setIsEdit(!isEdit)}
+    //       />
+    //       <Image
+    //         src="/images/agregar_btn.svg"
+    //         height={35}
+    //         width={122}
+    //         alt="agregar_btn"
+    //         onClick={addPlaylist}
+    //       />
+    //     </>
+    //   )}
+    // </div>
     // </div>
   );
 }

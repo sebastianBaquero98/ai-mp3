@@ -118,11 +118,11 @@ const SongItem = ({
             <p></p>
           )
         ) : (
-          <div className="flex gap-1">
+          <div className="ms-3 flex gap-1">
             <Image
-              src="/images/remove.svg"
-              height={15}
-              width={53}
+              src="/images/delete_icon.svg"
+              height={26}
+              width={22}
               alt="remove.svg"
               onClick={removeSong}
             />

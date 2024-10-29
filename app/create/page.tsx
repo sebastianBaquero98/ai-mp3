@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState, useTransition } from "react";
+import React, { useState, useTransition } from "react";
 import Image from "next/image";
 import { createTitle, getExtractedAttributes } from "@/lib/actions/ai.actions";
 import { usePlaylist } from "@/context/PlaylistContext";
@@ -11,20 +11,20 @@ import {
 import { makeRecomendation } from "@/lib/spotify";
 import { useRouter } from "next/navigation";
 import { msToHours } from "@/lib/utils";
-import { placeholderPrompts } from "@/constants";
-import { Button } from "@/components/ui/button";
+// import { placeholderPrompts } from "@/constants";
+// import { Button } from "@/components/ui/button";
 
 export default function Create() {
   const router = useRouter();
   const [prompt, setPrompt] = useState("");
   const [isPending, startTransition] = useTransition();
   const { setPlaylist } = usePlaylist();
-  const [placeholder, setPlaceholder] = useState("");
+  // const [placeholder, setPlaceholder] = useState("");
 
-  useEffect(() => {
-    const randomIndex = Math.floor(Math.random() * placeholderPrompts.length);
-    setPlaceholder(placeholderPrompts[randomIndex]);
-  }, []);
+  // useEffect(() => {
+  //   const randomIndex = Math.floor(Math.random() * placeholderPrompts.length);
+  //   setPlaceholder(placeholderPrompts[randomIndex]);
+  // }, []);
 
   const handleClick = async () => {
     startTransition(async () => {
@@ -69,38 +69,48 @@ export default function Create() {
     });
   };
   return (
-    <div className="flex h-screen flex-col items-center px-4">
-      <div className="flex h-screen items-center justify-center">
+    <div
+      className={`flex h-screen flex-col items-center  ${isPending ? "justify-center" : ""} px-4`}
+    >
+      <div
+        className={`flex items-center justify-center ${isPending ? "mb-8" : "h-screen"}`}
+      >
         <h1 className="primary-text-gradient text-center font-sans text-4xl text-white">
           ¿Qué quieres escuchar hoy?
         </h1>
       </div>
-      <div className="mb-8 flex  h-[100px] w-full  rounded-2xl bg-electric-green">
-        <textarea
-          onChange={(e) => setPrompt(e.target.value)}
-          value={prompt}
-          placeholder="Escribe lo que quieras escuchar"
-          className="size-full resize-none overflow-hidden rounded-2xl bg-electric-green p-2 text-base opacity-90 placeholder:text-black focus:outline-none"
-        />
-        {prompt.length > 0 ? (
-          <Image
-            src="/images/send_icon.svg"
-            height={26}
-            width={26}
-            alt=""
-            className="me-2"
-            onClick={handleClick}
+      {!isPending ? (
+        <div className="mb-8 flex  h-[100px] w-full  rounded-2xl bg-electric-green">
+          <textarea
+            onChange={(e) => setPrompt(e.target.value)}
+            value={prompt}
+            placeholder="Escribe lo que quieras escuchar"
+            className="size-full resize-none overflow-hidden rounded-2xl bg-electric-green p-2 text-base opacity-90 placeholder:text-black focus:outline-none"
           />
-        ) : (
-          <Image
-            src="/images/mic_icon.svg"
-            height={26}
-            width={26}
-            alt=""
-            className="me-2"
-          />
-        )}
-      </div>
+          {prompt.length > 0 ? (
+            <Image
+              src="/images/send_icon.svg"
+              height={26}
+              width={26}
+              alt=""
+              className="me-2"
+              onClick={handleClick}
+            />
+          ) : (
+            <Image
+              src="/images/mic_icon.svg"
+              height={26}
+              width={26}
+              alt=""
+              className="me-2"
+            />
+          )}
+        </div>
+      ) : (
+        <div className="spinner">
+          <div className="spinner1"></div>
+        </div>
+      )}
     </div>
     // <div className="flex h-screen flex-col items-center justify-center">
     //   <h1 className=" text-center font-sans text-[36px] text-white">
