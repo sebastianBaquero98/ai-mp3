@@ -16,7 +16,7 @@ export default function Home() {
       </div>
       <div className="mt-[5%] flex flex-col items-start gap-1 text-[20px] font-black">
         <Link href="/api/login">
-          <p>Iniciar Session</p>{" "}
+          <p>Iniciar Sesion</p>{" "}
         </Link>
         <button>Crear Cuenta</button>
       </div>
