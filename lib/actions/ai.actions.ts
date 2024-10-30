@@ -33,7 +33,8 @@ export async function getExtractedAttributes(
   favoriteGenres: string[],
   favoritaTracks: string[],
   audioFeatures: AudioFeatures,
-  promptInput: string
+  promptInput: string,
+  spotifyGenres: string
 ) {
   try {
     const systemPrompt = `Haces parte de un sistema que crear listas de reproducción musical que considera las preferencias musicales del usuario y su solicitud actual. Tu objetivo es extraer atributos musicales relevantes para crear una lista que se alinee con los gustos y deseos del usuario.
@@ -43,12 +44,16 @@ export async function getExtractedAttributes(
 - **NO** incluyas ningún texto fuera del JSON.
 - Utiliza **comillas dobles** tanto para las claves como para los valores de texto en el JSON.
 - **Atributos a incluir (si corresponde):**
-  - **"genres"**: Deben ser de la lista proporcionada.
+  - **"genres"**: IMPORTANTE: Deben ser de la lista de Genres Validos.
   - **"artists"**: Siempre tratar de incluir artistas. Utiliza los nombres completos de los artistas. Cuando el usuario incluya un genero en el prompt, los artistas que incluyas DEBEN de ser de ese genero asi no este en el listado de artistas favoritos del usuario.
   - **Características de audio**:
     - Para cada característica ("acousticness", "danceability", "energy", "instrumentalness", "liveness", "loudness", "speechiness", "tempo", "valence"), ajusta el valor promedio del usuario hasta en un **20%** según su solicitud actual.
     - Proporciona valores de **"min"** y **"max"** dentro de los rangos aceptados por Spotify (por ejemplo, de 0.0 a 1.0 para la mayoría de las características).
 - **Si el usuario incluye artistas específicos**, no incluyas **genres** ni **tracks** en la respuesta.
+- **Si el usuario pide musica similar a la de un artista** retorna unicamente los generos asociados al artista y del listado de artistas favoritos del usuario los que esten asociados a ese genero. **Los generos deben ser del listado de Genres Validos** Si no encuentras retorna generes vacio.
+- **Si el usuario pide musica similar a una canción** retorna el artista de la canción y los generos asociados a la canción. **Los generos deben ser de la lista de Genres Validos**
+
+"Genres Validos": ${spotifyGenres}
 **Ejemplos de salidas:**
 
 *Ejemplo 1:*
@@ -77,7 +82,22 @@ _Solicitud del usuario:_ "Ponme música acústica relajante."
 _Solicitud del usuario:_ "Quiero canciones de Coldplay"
 {
   "artists": ["Coldplay"],
-}`;
+}
+  
+*Ejemplo 4:*
+_Solicitud del usuario:_ "Quiero una playlist de canciones parecidas a las de Drake"
+{
+  "artists":["J.Cole"],
+  "genres": ["rap", "hip-hop"],
+}
+
+*Ejemplo 5:*
+_Solicitud del usuario:_ "Quiero una playlist de canciones parecidas a viva la vida"
+{
+  "artists":["Coldplay"],
+  "genres": ["pop"],
+}
+`;
 
     const userPrompt = `
 **Preferencias del usuario:**
@@ -90,7 +110,7 @@ _Solicitud del usuario:_ "Quiero canciones de Coldplay"
 "${promptInput}"
 `;
 
-    // console.log("PROMPT");
+    // console.log(systemPrompt);
     // console.log(combinedPrompt);
     const response = await client.chat.completions.create({
       model: "gpt-4o-2024-08-06",
@@ -131,6 +151,7 @@ export async function createTitle(playlist: SpotifyTrack[], prompt: string) {
         },
         { role: "user", content: userPrompt },
       ],
+
       max_tokens: 200,
       temperature: 0.7,
     });

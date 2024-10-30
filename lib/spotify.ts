@@ -356,11 +356,12 @@ async function getRecommendationGenre(
   const data = await response.json();
 
   return data.tracks.map((track: any) => ({
-    trackName: track.trackName,
-    trackId: track.trackId,
+    trackName: track.name,
+    trackId: track.id,
     artists: track.artists.map((artist: any) => artist.name).join(", "),
     playlistCover: track.album.images[0].url,
     previewUrl: track.previewUrl,
+    duration_ms: track.duration_ms,
   }));
 }
 
@@ -395,6 +396,7 @@ export async function getArtistTopTracks(artistName: string) {
       artists: track.artists.map((artist: any) => artist.name).join(", "),
       playlistCover: track.album.images[0].url,
       previewUrl: track.preview_url,
+      duration_ms: track.duration_ms,
     }));
   }
 }
@@ -468,7 +470,9 @@ async function filterByAudioFeatures(
     } else {
       if (!uniqueTrackIds.has(track.trackId)) {
         filteredTracks.push(track);
-        playlistDuracion += parseFloat(trackAudioFeatures.duration_ms);
+        // console.log("track", track);
+        playlistDuracion += track.duration_ms;
+        // console.log(playlistDuracion);
         uniqueTrackIds.add(track.trackId); // Add the track ID to the Set
       }
     }
@@ -508,6 +512,7 @@ export async function makeRecomendation(
 
   if (genres.length !== 0) {
     tracksGenres = await getRecommendationGenre(query, extractedAttributes);
+    // console.log("this is trackGenres", tracksGenres);
   }
 
   const recommendedTracks = tracksArtist.concat(tracksGenres);

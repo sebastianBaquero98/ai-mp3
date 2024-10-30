@@ -8,7 +8,7 @@ import {
   getTopArtistsInfo,
   getUserTopTrackNames,
 } from "@/lib/actions/user_profile.actions";
-import { makeRecomendation } from "@/lib/spotify";
+import { getAvailableGenreSeeds, makeRecomendation } from "@/lib/spotify";
 import { useRouter } from "next/navigation";
 import { msToHours } from "@/lib/utils";
 // import { placeholderPrompts } from "@/constants";
@@ -35,13 +35,17 @@ export default function Create() {
       const topTracks = await getUserTopTrackNames();
       // console.log(topTracks);
       const audioFeatures = await getAudioFeatures();
+      const spotifyGenres = await getAvailableGenreSeeds();
+      const nameString = spotifyGenres.join(", ");
       let extractedAttributes = await getExtractedAttributes(
         favoriteArtists,
         favoriteGenres,
         topTracks,
         audioFeatures,
-        prompt
+        prompt,
+        nameString
       );
+      console.log(extractedAttributes);
 
       try {
         extractedAttributes = extractedAttributes.replace("json", "");

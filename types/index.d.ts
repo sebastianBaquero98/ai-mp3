@@ -18,6 +18,7 @@ export interface SpotifyTrack {
   artists: string;
   playlistCover: string;
   previewUrl: string;
+  duration_ms: number;
 }
 
 export interface AudioFeatures {
