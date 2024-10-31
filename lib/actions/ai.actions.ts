@@ -1,8 +1,13 @@
 "use server";
 
 import { AudioFeatures, SpotifyTrack } from "@/types";
+
 // import Groq from "groq-sdk";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import OpenAI from "openai";
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -112,20 +117,39 @@ _Solicitud del usuario:_ "Quiero una playlist de canciones parecidas a viva la v
 
     // console.log(systemPrompt);
     // console.log(combinedPrompt);
-    const response = await client.chat.completions.create({
-      model: "gpt-4o-2024-08-06",
-      messages: [
-        {
-          role: "system",
-          content: systemPrompt,
-        },
-        { role: "user", content: userPrompt },
-      ],
-      max_tokens: 200,
-      temperature: 0.7,
+    // const result = await model.generateContent({
+    //   prompt: {
+    //     system: systemPrompt,
+    //     user: userPrompt,
+    //   },
+    // });
+    const result = await model.generateContent({
+      prompt: {
+        system: systemPrompt,
+        user: userPrompt,
+      },
+      // Other parameters like model, temperature, etc.
     });
-    const attributes = response.choices[0]?.message?.content || "";
-    return attributes;
+    
+    const response = result.response;
+    const textResponse = response.text();
+    const parsedAttributes = JSON.parse(textResponse);
+    return parsedAttributes;
+
+    // const response = await client.chat.completions.create({
+    //   model: "gpt-4o-2024-08-06",
+    //   messages: [
+    //     {
+    //       role: "system",
+    //       content: systemPrompt,
+    //     },
+    //     { role: "user", content: userPrompt },
+    //   ],
+    //   max_tokens: 200,
+    //   temperature: 0.7,
+    // });
+    // const attributes = response.choices[0]?.message?.content || "";
+    return response;
   } catch (error) {
     console.error("Error getting audio features:", error);
     throw error;

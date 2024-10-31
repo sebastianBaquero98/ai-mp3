@@ -37,7 +37,7 @@ export default function Create() {
       const audioFeatures = await getAudioFeatures();
       const spotifyGenres = await getAvailableGenreSeeds();
       const nameString = spotifyGenres.join(", ");
-      let extractedAttributes = await getExtractedAttributes(
+      const extractedAttributes = await getExtractedAttributes(
         favoriteArtists,
         favoriteGenres,
         topTracks,
@@ -48,13 +48,13 @@ export default function Create() {
       console.log(extractedAttributes);
 
       try {
-        extractedAttributes = extractedAttributes.replace("json", "");
-        extractedAttributes = extractedAttributes.replace("`", "");
-        extractedAttributes = extractedAttributes.replace("`", "");
-        extractedAttributes = extractedAttributes.replace("`", "");
-        extractedAttributes = extractedAttributes.replace("`", "");
-        extractedAttributes = extractedAttributes.replace("`", "");
-        extractedAttributes = extractedAttributes.replace("`", "");
+        // extractedAttributes = extractedAttributes.replace("json", "");
+        // extractedAttributes = extractedAttributes.replace("`", "");
+        // extractedAttributes = extractedAttributes.replace("`", "");
+        // extractedAttributes = extractedAttributes.replace("`", "");
+        // extractedAttributes = extractedAttributes.replace("`", "");
+        // extractedAttributes = extractedAttributes.replace("`", "");
+        // extractedAttributes = extractedAttributes.replace("`", "");
         const attributes = JSON.parse(extractedAttributes);
         const { filteredTracks, playlistDuracion } =
           await makeRecomendation(attributes);
