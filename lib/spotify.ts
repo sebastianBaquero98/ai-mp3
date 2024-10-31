@@ -355,6 +355,7 @@ async function getRecommendationGenre(
 
   const data = await response.json();
 
+  // console.log(data.tracks);
   return data.tracks.map((track: any) => ({
     trackName: track.name,
     trackId: track.id,
@@ -362,6 +363,7 @@ async function getRecommendationGenre(
     playlistCover: track.album.images[0].url,
     previewUrl: track.previewUrl,
     duration_ms: track.duration_ms,
+    linkToSong: track.external_urls.spotify,
   }));
 }
 
@@ -390,6 +392,7 @@ export async function getArtistTopTracks(artistName: string) {
     // if (artistName === "Taylor Swift") {
     //   console.log(tracks);
     // }
+    // console.log(tracks);
     return tracks.map((track: any) => ({
       trackName: track.name,
       trackId: track.id,
@@ -397,6 +400,7 @@ export async function getArtistTopTracks(artistName: string) {
       playlistCover: track.album.images[0].url,
       previewUrl: track.preview_url,
       duration_ms: track.duration_ms,
+      linkToSong: track.external_urls.spotify,
     }));
   }
 }

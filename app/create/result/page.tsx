@@ -111,6 +111,7 @@ export default function Result() {
               isPlaying={track.trackId === currentlyPlayingId}
               onPlay={handlePlay}
               onEnded={handleEnded}
+              linkToSong={track.linkToSong}
             />
           ))}
         </ScrollArea>

@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import Image from "next/image";
 import { usePlaylist } from "@/context/PlaylistContext";
+import Link from "next/link";
 
 interface props {
   name: string;
@@ -11,6 +12,7 @@ interface props {
   isEdit: boolean;
   index: number;
   isPlaying: boolean;
+  linkToSong: string;
   onPlay: (id: string) => void;
   onEnded: (id: string) => void;
 }
@@ -23,6 +25,7 @@ const SongItem = ({
   isEdit,
   index,
   isPlaying,
+  linkToSong,
   onPlay,
   onEnded,
 }: props) => {
@@ -72,7 +75,8 @@ const SongItem = ({
           className="rounded-lg border-2 border-black"
         />
         <div className="ms-[23px] flex w-3/5 flex-col">
-          <h1
+          <Link
+            href={linkToSong}
             className={`font-bungee ${
               name.replace(/\s*\(.*?\)/, "").split(" ").length >= 4
                 ? "text-[10px]"
@@ -82,7 +86,7 @@ const SongItem = ({
             {name.includes("-")
               ? name.split("-")[0].replace(/\s*\(.*?\)/, "")
               : name.replace(/\s*\(.*?\)/, "")}
-          </h1>
+          </Link>
           {artists.split(",").length > 4 ? (
             <p className="mt-[-5px] font-sans text-[10px]">
               {artists.split(",").slice(0, 4).join(", ") + ", ..."}
