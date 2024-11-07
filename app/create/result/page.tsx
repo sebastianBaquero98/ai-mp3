@@ -114,11 +114,6 @@ export default function Result() {
             />
           ))}
         </ScrollArea>
-        {/* {Object.keys(recommendedTracks).map(
-          (track: SpotifyTrack, index: number) => (
-            <SongItem key={index} name={track.trackName} />
-          )
-        )} */}
       </div>
       <div className=" mt-[15px] flex gap-4">
         {!isPending && (

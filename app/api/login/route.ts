@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   const clientId = process.env.SPOTIFY_CLIENT_ID;
-  console.log("clientId", clientId);
+  // console.log("clientId", clientId);
   // const redirectUri = encodeURIComponent(
   //   `${process.env.NEXT_PUBLIC_BASE_URL}/api/callback`
   // );
@@ -21,7 +21,7 @@ export async function GET() {
     state,
   });
 
-  console.log("params", params.toString());
+  // console.log("params", params.toString());
 
   const response = NextResponse.redirect(
     `https://accounts.spotify.com/authorize?${params.toString()}`

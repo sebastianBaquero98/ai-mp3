@@ -42,6 +42,73 @@ export async function getQuery(
   return data;
 }
 
+export async function getUsersPlaylist() {
+  const cookieStore = cookies();
+  const accessToken = cookieStore.get("spotify_access_token")?.value;
+
+  const myHeaders = new Headers();
+  myHeaders.append("Authorization", `Bearer ${accessToken}`);
+
+  const playlistsUrl = `https://api.spotify.com/v1/me/playlists`;
+  const playlistsResponse = await fetch(playlistsUrl, {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  });
+
+  if (!playlistsResponse.ok) {
+    const errorBody = await playlistsResponse.text();
+    console.error("Error response:", errorBody);
+    throw new Error(
+      `Failed to fetch user's playlists: ${playlistsResponse.status} ${playlistsResponse.statusText}`
+    );
+  }
+
+  const playlistsData = await playlistsResponse.json();
+  const playlists = playlistsData.items;
+
+  return playlists;
+}
+
+export async function getTracksByPlaylistId(
+  playlistId: string
+): Promise<SpotifyTrack[]> {
+  const cookieStore = cookies();
+  const accessToken = cookieStore.get("spotify_access_token")?.value;
+
+  const myHeaders = new Headers();
+  myHeaders.append("Authorization", `Bearer ${accessToken}`);
+
+  const tracksUrl = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
+  const tracksResponse = await fetch(tracksUrl, {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  });
+
+  if (!tracksResponse.ok) {
+    const errorBody = await tracksResponse.text();
+    console.error("Error response:", errorBody);
+    throw new Error(
+      `Failed to fetch tracks for playlist ${playlistId}: ${tracksResponse.status} ${tracksResponse.statusText}`
+    );
+  }
+
+  const tracksData = await tracksResponse.json();
+
+  // Transform the Spotify API response into our custom format
+  const formattedTracks: SpotifyTrack[] = tracksData.items.map((item: any) => ({
+    trackName: item.track.name,
+    trackId: item.track.id,
+    artists: item.track.artists.map((artist: any) => artist.name).join(", "),
+    playlistCover: item.track.album.images[0]?.url || "", // Get the first (usually largest) image
+    previewUrl: item.track.preview_url,
+    linkToSong: item.track.external_urls.spotify,
+  }));
+
+  return formattedTracks;
+}
+
 export async function exchangeCodeForTokens(
   code: string
 ): Promise<SpotifyTokens> {

@@ -1,6 +1,7 @@
+"use client";
 import React, { useRef, useEffect } from "react";
 import Image from "next/image";
-import { usePlaylist } from "@/context/PlaylistContext";
+// import { usePlaylist } from "@/context/PlaylistContext";
 
 interface props {
   name: string;
@@ -26,7 +27,7 @@ const SongItem = ({
   onPlay,
   onEnded,
 }: props) => {
-  const { removeTrack } = usePlaylist();
+  // const { removeTrack } = usePlaylist();
   const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
@@ -55,9 +56,9 @@ const SongItem = ({
     onPlay(id);
   };
 
-  const removeSong = () => {
-    removeTrack(index);
-  };
+  // const removeSong = () => {
+  //   removeTrack(index);
+  // };
 
   // const replaceSong = (id: string) => {};
   return (
@@ -83,7 +84,7 @@ const SongItem = ({
               ? name.split("-")[0].replace(/\s*\(.*?\)/, "")
               : name.replace(/\s*\(.*?\)/, "")}
           </h1>
-          {artists.split(",").length > 4 ? (
+          {artists?.split(",").length > 4 ? (
             <p className="mt-[-5px] font-sans text-[10px]">
               {artists.split(",").slice(0, 4).join(", ") + ", ..."}
             </p>
@@ -124,7 +125,7 @@ const SongItem = ({
               height={26}
               width={22}
               alt="remove.svg"
-              onClick={removeSong}
+              // onClick={removeSong}
             />
           </div>
         )}

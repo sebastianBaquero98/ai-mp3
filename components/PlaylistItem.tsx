@@ -1,68 +1,32 @@
-import React, { useRef, useEffect } from "react";
+import React from "react";
 import Image from "next/image";
-import { usePlaylist } from "@/context/PlaylistContext";
-import SongItem from "./SongItem";
+import Link from "next/link";
 
 interface props {
   name: string;
-  id: string;
-  artists: string;
+  numSongs: number;
+  duration: number;
   playlistCover: string;
-  previewUrl: string;
-  isEdit: boolean;
-  index: number;
-  isPlaying: boolean;
-  onPlay: (id: string) => void;
-  onEnded: (id: string) => void;
+  id: string;
+  playlistDescription: string;
 }
 const PlaylistItem = ({
   name,
-  id,
-  artists,
+  numSongs,
+  duration,
   playlistCover,
-  previewUrl,
-  isEdit,
-  index,
-  isPlaying,
-  onPlay,
-  onEnded,
+  id,
+  playlistDescription,
 }: props) => {
-  const { removeTrack } = usePlaylist();
-  const audioRef = useRef<HTMLAudioElement>(null);
-
-  useEffect(() => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.play();
-      } else {
-        audioRef.current.pause();
-        audioRef.current.currentTime = 0;
-      }
-    }
-  }, [isPlaying]);
-
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (audio) {
-      const handleEnded = () => onEnded(id);
-      audio.addEventListener("ended", handleEnded);
-      return () => {
-        audio.removeEventListener("ended", handleEnded);
-      };
-    }
-  }, [id, onEnded]);
-
-  const togglePlay = () => {
-    onPlay(id);
-  };
-
-  const removeSong = () => {
-    removeTrack(index);
-  };
-
+  const cleanPlaylistDescription = playlistDescription.includes("&quot;")
+    ? playlistDescription.replace("&quot;", "")
+    : playlistDescription;
   // const replaceSong = (id: string) => {};
   return (
-    <div className="relative  w-full text-white">
+    <Link
+      href={`playlist/${id}?name=${name}&numbersongs=${numSongs}&playlistcover=${playlistCover}&playlistdescription=${cleanPlaylistDescription}`}
+      className="relative  w-full text-white"
+    >
       {/* Main Content Container */}
       <div className="relative z-10 flex h-[55px] w-full items-center ps-[28px]">
         <Image
@@ -84,51 +48,10 @@ const PlaylistItem = ({
               ? name.split("-")[0].replace(/\s*\(.*?\)/, "")
               : name.replace(/\s*\(.*?\)/, "")}
           </h1>
-          {artists.split(",").length > 4 ? (
-            <p className="mt-[-5px] font-sans text-[10px]">
-              {artists.split(",").slice(0, 4).join(", ") + ", ..."}
-            </p>
-          ) : (
-            <p className="mt-[-5px] font-sans text-[10px]">{artists}</p>
-          )}
+          <p className="mt-[-2px] font-sans text-[10px] font-extralight">
+            {numSongs} Songs | {duration}H
+          </p>
         </div>
-
-        {!isEdit ? (
-          previewUrl ? (
-            <div>
-              <audio ref={audioRef} src={previewUrl} />
-              {isPlaying ? (
-                <Image
-                  src="/images/playling.gif"
-                  height={20}
-                  width={40}
-                  alt="stop_btn.svg"
-                  onClick={togglePlay}
-                />
-              ) : (
-                <Image
-                  src="/images/play_btn_v2.svg"
-                  height={32}
-                  width={32}
-                  alt="play_btn.svg"
-                  onClick={togglePlay}
-                />
-              )}
-            </div>
-          ) : (
-            <p></p>
-          )
-        ) : (
-          <div className="ms-3 flex gap-1">
-            <Image
-              src="/images/delete_icon.svg"
-              height={26}
-              width={22}
-              alt="remove.svg"
-              onClick={removeSong}
-            />
-          </div>
-        )}
       </div>
 
       {/* Graffiti Strip Image Positioned Below */}
@@ -140,8 +63,8 @@ const PlaylistItem = ({
           alt="grafiti_strip"
         />
       </div>
-    </div>
+    </Link>
   );
 };
 
-export default SongItem;
+export default PlaylistItem;

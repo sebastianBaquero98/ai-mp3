@@ -1,6 +1,11 @@
+import PlaylistItem from "@/components/PlaylistItem";
+import { getUsersPlaylist } from "@/lib/spotify";
+import { ScrollArea } from "@radix-ui/react-scroll-area";
 import Image from "next/image";
 
-export default function UserProfile() {
+export default async function UserProfile() {
+  const playlists = await getUsersPlaylist();
+  // console.log(playlists);
   return (
     <div className="flex flex-col items-center px-5">
       <Image
@@ -23,6 +28,21 @@ export default function UserProfile() {
           <h1 className="font-bungee text-[30px]">300</h1>
           <p className="mt-[-5px] text-[12px]">Follows</p>
         </div>
+      </div>
+      <div className="mt-2 flex w-full flex-col items-center gap-1">
+        <ScrollArea className="flex h-[550px] w-full flex-col ">
+          {playlists.map((e: any) => (
+            <PlaylistItem
+              key={e}
+              id={e.id}
+              name={e.name}
+              numSongs={e.tracks.total}
+              duration={13.7}
+              playlistCover={e.images[0].url}
+              playlistDescription={e.description}
+            />
+          ))}
+        </ScrollArea>
       </div>
     </div>
   );
